@@ -31,7 +31,13 @@ RBF interpolation can help us with this problem by accounting for the influence 
 This approach allowes the technique to take into account the local behavior of the function and it is particularly useful when the function is smooth and has a limited number of local variations.
 
 
-### Mathematical Theory
+### Mathematical Foundations
+The mathematicl foundations of RBF interpolation are based on the use of a radial basis function (RBF) $\phi(.)$ to calculate the similarity between two points in our input space. 
+The RBF assigns a weight to each known point based on its distance from the _query point_ $x_q$. 
+Points that are close to the query point are given more weight, while points that are farther away are given less weight. The final approximation for the query point is then calculated by taking a weighted average of the known values, where weights are calculated using the RBF.
+
+Assuming we have a set of known data points in input space $\mathbf{x}_i \in $
+
 Assuming we have a semi-continuous function $\psi(\mathbf{x}) \subset \mathbb{R}^n$, that is defined on a domain $\mathcal{X} \subset \mathbb{R}^d$. Where $\mathbf{x} \in \mathbb{R}^d$ and $\mathbf{y} \in \mathbb{R}^n$.
 
 We are trying to predict the values if an unknown function $\psi(\mathbf{x})$ for new inputs that fall in the same domain as a set of known inputs $\mathcal{X}$, but not explicitly mentioned in it.
