@@ -36,15 +36,22 @@ The mathematicl foundations of RBF interpolation are based on the use of a radia
 The RBF assigns a weight to each known point based on its distance from the _query point_ $x_q$. 
 Points that are close to the query point are given more weight, while points that are farther away are given less weight. The final approximation for the query point is then calculated by taking a weighted average of the known values, where weights are calculated using the RBF.
 
-Assuming we have a set of known data points in input space $\mathbf{x}_i \in $
+Assuming we have a set of known data points in input space $\mathbf{x}^{(i)} \in \mathbb{R}^d$ we call that set $\mathcal{X}$. Each point $\mathbf{x}^{(i)}$ has a vector of values $\mathbf{y}^{(i)} \in \mathbb{R}^n$ associated with it. We call this set $\mathcal{Y}$.
 
-Assuming we have a semi-continuous function $\psi(\mathbf{x}) \subset \mathbb{R}^n$, that is defined on a domain $\mathcal{X} \subset \mathbb{R}^d$. Where $\mathbf{x} \in \mathbb{R}^d$ and $\mathbf{y} \in \mathbb{R}^n$.
+We are interested in approximating the value of a function $\psi(\mathbf{x})$ for a new point $\mathbf{x}_q \in \mathbb{R}^d$ that falls in the same domain as the set of known points $\mathcal{X}$.
 
-We are trying to predict the values if an unknown function $\psi(\mathbf{x})$ for new inputs that fall in the same domain as a set of known inputs $\mathcal{X}$, but not explicitly mentioned in it.
+In this context, we denote the actual function $\psi(\mathbf{x}) : \mathbb{R}^d \mapsto \mathbb{R}^n$ as the _true function_ and the approximation $\hat{\psi}(\mathbf{x})$ of it as the _interpolant_.
 
-We have some known data points $(\mathcal{X}, \mathcal{Y}) = \{(\mathbf{x}^{(i)}, \mathbf{y}^{(i)})\}$, where $\mathbf{x}^{(i)} \in \mathbb{R}^d$ and $\mathbf{y}^{(i)} \in \mathbb{R}^n$.
+To approximate the value of the true function for a new point $\mathbf{x}_q$, we use the following formula:
+$$
+    \hat{\mathbf{y}}_q = \sum_{i=1}^N \phi(||\mathbf{x}_q - \mathbf{x}^{(i)}||) \cdot \mathbf{w}^{(i)}
+$$
 
-We aim to use this information to approximate the value ofs of $\psi(\mathbf{x}^{(j)})$ for new inputs $\mathbf{x} \in \mathbb{R}^d$.
+Such that $\mathbf{w}^{(i)}$ is the vector of weights associated with the known point (also known as support points) $\mathbf{x}^{(i)}$ and $\phi(||\mathbf{x}_q - \mathbf{x}^{(i)}||)$ is the RBF that calculates the similarity between the query point $\mathbf{x}_q$ and the point $\mathbf{x}^{(i)}$.
+
+The RBF function is an n-dimensional function that takes a scalar value as input and returns an n-dimensional vector as output. The RBF function can be one of many possible functions.
+
+TODO
 __placeholder for formulas__
 ## Implementation Architecture
 
