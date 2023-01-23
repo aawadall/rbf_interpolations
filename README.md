@@ -49,10 +49,90 @@ $$
 
 Such that $\mathbf{w}^{(i)}$ is the vector of weights associated with the known point (also known as support points) $\mathbf{x}^{(i)}$ and $\phi(||\mathbf{x}_q - \mathbf{x}^{(i)}||)$ is the RBF that calculates the similarity between the query point $\mathbf{x}_q$ and the point $\mathbf{x}^{(i)}$.
 
-The RBF function is an n-dimensional function that takes a scalar value as input and returns an n-dimensional vector as output. The RBF function can be one of many possible functions.
+The RBF function is an n-dimensional function that takes a scalar value as input and returns an n-dimensional vector as output. The RBF function $\phi(.)$ could be one of many possible functions, e.g.:
 
-TODO
-__placeholder for formulas__
+$$
+    \begin{aligned}
+        \phi_{\text{gaussian}}(r) &= e^{-r^2} \\
+        \phi_{\text{multiquadric}}(r) &= \sqrt{1 + r^2} \\
+        \phi_{\text{inverse multiquadric}}(r) &= \frac{1}{\sqrt{1 + r^2}} \\
+        \phi_{\text{thin plate spline}}(r) &= r^2 \log(r) \\
+        \phi_{\text{cubic}}(r) &= r^3 \\
+        \phi_{\text{linear}}(r) &= r
+    \end{aligned}
+$$
+
+such that $r$ is a distance between the query point $\mathbf{x}_q$ and the point $\mathbf{x}^{(i)}$. The distance can be calculated using many possible metrics, e.g.:
+
+$$
+    \begin{aligned}
+        r_{\text{euclidean}} &= ||\mathbf{x}_q - \mathbf{x}^{(i)}|| \\
+        &= \sqrt{\sum_{j=1, \mathbf{x}^{(i)} \in \mathcal{X}}^d (x_{q,j} - x^{(i)}_{j})^2} \\
+        r_{\text{manhattan}} &= \sum_{j=1, \mathbf{x}^{(i)} \in \mathcal{X}}^d |x_{q,j} - x^{(i)}_{j}| \\
+        r_{\text{chebyshev}} &= \max_{j=1, \mathbf{x}^{(i)} \in \mathcal{X}}^d |x_{q,j} - x^{(i)}_{j}|
+    \end{aligned}
+$$
+
+Now that we have distance measures, and a kernel to calculate the similarity between two points, we can come up with a similarity matrix $\mathbf{K}$ called the _kernel matrix_. _Note: it can also be called the <u>Gram matrix</u>._
+
+The kernel matrix is a square matrix  $m \times m$, where $m$ is the number of known points. i.e. $\mathbf{K} \in \mathbb{R}^{m \times m }$.The kernel matrix is calculated by applying the RBF function to each pair of points in the set of known points $\mathcal{X}$.
+
+$$
+    \begin{aligned}
+        \mathbf{K} &= \left( 
+        \begin{matrix}
+            k_{1,1} & k_{1,2} & \dots & k_{1,m} \\
+            k_{2,1} & k_{2,2} & \dots & k_{2,m} \\
+            \vdots & \vdots & \ddots & \vdots \\
+            k_{m,1} & k_{m,2} & \dots & k_{m,m}
+        \end{matrix}  
+        \right) \\
+    \end{aligned}
+$$
+
+Where 
+$$
+k_{i,j} = \phi(||\mathbf{x}^{(i)} - \mathbf{x}^{(j)}||) \quad \forall \space \mathbf{x}^{(i)}, \mathbf{x}^{(j)} \in \mathcal{X}
+$$
+
+The kernel matrix is then used to calculate the weights $\mathbf{w}^{(i)}$ for each known point $\mathbf{x}^{(i)}$, such that:
+
+$$
+    \begin{aligned}
+        \mathbf{y} &= \mathbf{K} \cdot \mathbf{w} 
+    \end{aligned}
+$$
+
+where $\mathbf{y} \in \mathbb{R}^{m \times n}$ corresponding to actual observations of the function $\psi(.)$ to be approximated, $\mathbf{K} \in \mathbb{R}^{m \times m}$ is our Kernel matrix we just calculated, and $\mathbf{w} \in \mathbb{R}^{m \times n}$ are the weights used to map $\mathbf{K}$ to $\mathbf{y}$. 
+
+We can calculate $\mathbf{w}$ using least squares regression, such that:
+$$
+    \begin{aligned}
+        \mathbf{w} &= (\mathbf{K}^T \cdot \mathbf{K})^{-1} \cdot \mathbf{K}^T \cdot \mathbf{y}
+    \end{aligned}
+$$
+
+Now we have something ready to reuse for approximating the value of the true function for a new point $\mathbf{x}_q$. we simply plug in the query point $\mathbf{x}_q$ into the following system of equations:
+
+$$
+    \begin{aligned}
+        \vec{r}_q &= \left(
+        \begin{matrix}
+            ||\mathbf{x}_q - \mathbf{x}^{(1)}|| \\
+            ||\mathbf{x}_q - \mathbf{x}^{(2)}|| \\
+            \vdots \\
+            ||\mathbf{x}_q - \mathbf{x}^{(m)}||
+        \end{matrix}
+        \right) \quad \forall \mathbf{x}^{(i)} \in \mathcal{X} \\
+
+        \vec{\phi}_q &= \phi(\vec{r}_q) \\
+        \vec{y}_q &= \vec{\phi}_q^{T} \cdot \mathbf{w} \\
+    \end{aligned}
+$$
+
+note that $\vec{y}_q$ is a vector of length $n$ corresponding to the number of dimensions of the function $\psi(.)$, $\vec{\phi}_q$ is a vector of length $m$ corresponding to the number of known points $\mathcal{X}$, and $\mathbf{w}$ is a matrix of size $m \times n$ as calculated earlier. 
+
+
 ## Implementation Architecture
 
 ### Python
