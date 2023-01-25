@@ -1,0 +1,50 @@
+@startuml rbfinterp - Python class diagram
+
+title
+rbfinterp - Python class diagram
+end title
+
+class "RBFInterpolation" as rbf_interp {
+    kernel : RBFKernel
+}
+
+package "distances" {
+    class "No Class" as no_class {
+        + euclidean_distance(point1: Tuple[float,...], point2: Tuple[float,...]) -> float:
+    }
+}
+package "kernels" as kernels {
+    interface "RBFKernel" as rbf_kernel_interface <<Prototype>>{
+        + __init__(params: Any) -> None:
+        + similarity(point1: Tuple[float,...], point2: Tuple[float,...]) -> float:
+        + __call__(point1: Tuple[float,...], point2: Tuple[float,...], params:Any = None) -> float:
+        + bulk_similarity(point1: List[Tuple[float,...]], point2: List[Tuple[float,...]]) -> List[float]:
+        + params() -> Any:
+        + params(params: Any) -> None:
+        + name() -> str:
+    }
+
+    class "GaussianRBFKernel" as gaussian_rbf_kernel {
+        params : Dict[string, Any]
+    }
+
+    note left of gaussian_rbf_kernel 
+        parameters include:
+        - sigma: float
+        - distance
+    end note 
+
+}
+package "interpolation" {
+
+}
+
+package "utils" {
+
+}
+
+rbf_interp *--> rbf_kernel_interface
+rbf_kernel_interface <|-- gaussian_rbf_kernel
+kernels ..> no_class : uses one of the distance methods 
+
+@enduml
