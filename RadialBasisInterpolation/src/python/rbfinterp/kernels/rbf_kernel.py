@@ -17,11 +17,11 @@ class RBFKernel(Protocol):
         """
         ...
 
-    def __call__(self, point1: Tuple[float,...], point2: Tuple[float,...], params:Any = None) -> float:
-        """
-        Compute the similarity between two points
-        """
-        ...
+    # def __call__(self, point1: Tuple[float,...], point2: Tuple[float,...], params:Any = None) -> float:
+    #     """
+    #     Compute the similarity between two points
+    #     """
+    #     ...
 
     def bulk_similarity(self, point1: List[Tuple[float,...]], point2: List[Tuple[float,...]]) -> List[float]:
         """
@@ -29,19 +29,19 @@ class RBFKernel(Protocol):
         """
         ...
 
-    @property
-    def params(self) -> Any:
-        """
-        Get the parameters of the RBF kernel
-        """
-        ...
+    # @property
+    # def params(self) -> Any:
+    #     """
+    #     Get the parameters of the RBF kernel
+    #     """
+    #     ...
 
-    @params.setter
-    def params(self, params: Any) -> None:
-        """
-        Set the parameters of the RBF kernel
-        """
-        ...
+    # @params.setter
+    # def params(self, params: Any) -> None:
+    #     """
+    #     Set the parameters of the RBF kernel
+    #     """
+    #     ...
 
     @property
     def name(self) -> str:
