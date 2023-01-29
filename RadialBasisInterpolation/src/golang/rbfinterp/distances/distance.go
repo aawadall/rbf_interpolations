@@ -2,10 +2,20 @@ package distances
 
 import (
 	"github.com/aawadall/rbf_interpolations/golang/rbfinterp"
-	. "github.com/aawadall/rbf_interpolations/golang/rbfinterp/utils"
+	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/utils"
 )
 
+// function types 
+type SubtractFunc = func(x, y rbfinterp.Point) (rbfinterp.Point, error)
 type DistanceFunction func(x, y rbfinterp.Point) (float64, error)
+
+// function aliases
+var (
+	Square = utils.Square
+	SquareRootSum = utils.SquareRootSum
+	Subtract  = utils.Subtract
+)
+
 
 // EuclideanDistance
 func EuclideanDistance(x, y rbfinterp.Point) (float64, error) {
