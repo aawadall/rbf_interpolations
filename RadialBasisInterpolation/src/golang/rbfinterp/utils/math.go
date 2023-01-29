@@ -4,13 +4,16 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/aawadall/rbf_interpolations/golang/rbfinterp"
+	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/types"
 )
 
+// type aliases
+type Point = types.Point
+
 // Square returns the square of coordinates
-func Square(x rbfinterp.Point) rbfinterp.Point {
+func Square(x Point) Point {
 	// TODO - implement
-	result := rbfinterp.Point{
+	result := Point{
 		Dimensionality: x.Dimensionality,
 		Coordinates:    make([]float64, x.Dimensionality),
 	}
@@ -24,15 +27,15 @@ func Square(x rbfinterp.Point) rbfinterp.Point {
 }
 
 // Subtract returns the difference between two points
-func Subtract(x, y rbfinterp.Point) (rbfinterp.Point, error) {
+func Subtract(x, y Point) (Point, error) {
 
 	// check that the points are the same dimensionality
 	if x.Dimensionality != y.Dimensionality {
-		return rbfinterp.Point{}, fmt.Errorf("points are not the same dimensionality")
+		return Point{}, fmt.Errorf("points are not the same dimensionality")
 	}
 
 	// TODO - implement
-	result := rbfinterp.Point{
+	result := Point{
 		Dimensionality: x.Dimensionality,
 		Coordinates:    make([]float64, x.Dimensionality),
 	}
@@ -46,7 +49,7 @@ func Subtract(x, y rbfinterp.Point) (rbfinterp.Point, error) {
 }
 
 // SquareRootSum returns the square root of the sum of the squares of the coordinates
-func SquareRootSum(x rbfinterp.Point) (float64, error) {
+func SquareRootSum(x Point) (float64, error) {
 	// TODO - implement
 	result := 0.0
 

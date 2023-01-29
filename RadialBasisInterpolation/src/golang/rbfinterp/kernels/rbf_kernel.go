@@ -1,12 +1,8 @@
 package kernels
 
-import (
-	"github.com/aawadall/rbf_interpolations/golang/rbfinterp"
-)
-
 type RBFKernel interface {
 	// similarity returns the similarity between two points.
-	similarity(x, y rbfinterp.Point) float64
+	similarity(x, y Point) float64
 }
 
 // Main Factory method for creating a new RBFKernel.
@@ -19,4 +15,3 @@ func NewRBFKernel(kernelType string, parameters map[string]interface{}) RBFKerne
 	}
 	return nil
 }
-

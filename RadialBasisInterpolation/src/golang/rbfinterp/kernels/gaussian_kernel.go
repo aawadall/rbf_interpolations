@@ -1,7 +1,11 @@
 package kernels
 
-import "github.com/aawadall/rbf_interpolations/golang/rbfinterp"
+import (
+	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/types"
+)
 
+// type aliases
+type Point = types.Point
 type GaussianKernel struct {
 }
 
@@ -12,7 +16,7 @@ func NewGaussianKernel(params map[string]interface{}) *GaussianKernel {
 }
 
 // similarity returns the similarity between two points.
-func (gk *GaussianKernel) similarity(x, y rbfinterp.Point) float64 {
+func (gk *GaussianKernel) similarity(x, y Point) float64 {
 	// TODO - implement
 	return 0.0
 }
