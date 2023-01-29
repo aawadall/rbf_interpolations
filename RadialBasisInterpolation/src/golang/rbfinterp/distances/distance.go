@@ -5,9 +5,9 @@ import (
 	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/utils"
 )
 
-// function types 
-type SubtractFunc = func(x, y rbfinterp.Point) (rbfinterp.Point, error)
+// type aliases 
 type DistanceFunction func(x, y rbfinterp.Point) (float64, error)
+type Point = rbfinterp.Point
 
 // function aliases
 var (
@@ -18,7 +18,7 @@ var (
 
 
 // EuclideanDistance
-func EuclideanDistance(x, y rbfinterp.Point) (float64, error) {
+func EuclideanDistance(x, y Point) (float64, error) {
 	// return sqrt(Sum(x^2 - y^2))
 	difference, err := Subtract(x, y)
 	if err != nil {
