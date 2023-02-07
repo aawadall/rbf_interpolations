@@ -1,18 +1,26 @@
 package kernels
 
 import (
+	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/distances"
 	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/types"
 )
 
 // type aliases
 type Point = types.Point
+type DistanceFunction = distances.DistanceFunction
+
 type GaussianKernel struct {
+	DistanceFunction DistanceFunction
+	Parameters       map[string]interface{}
 }
 
 // GaussianKernel is a struct that implements the Gaussian Radial Basis Function.
-func NewGaussianKernel(params map[string]interface{}) *GaussianKernel {
+func NewGaussianKernel(distance DistanceFunction, params map[string]interface{}) *GaussianKernel {
 	// TODO - implement
-	return &GaussianKernel{}
+	return &GaussianKernel{
+		DistanceFunction: distance,
+		Parameters:       params,
+	}
 }
 
 // similarity returns the similarity between two points.

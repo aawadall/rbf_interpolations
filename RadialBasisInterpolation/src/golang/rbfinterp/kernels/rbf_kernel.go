@@ -6,12 +6,12 @@ type RBFKernel interface {
 }
 
 // Main Factory method for creating a new RBFKernel.
-func NewRBFKernel(kernelType string, parameters map[string]interface{}) RBFKernel {
+func NewRBFKernel(kernelType string, distance DistanceFunction, parameters map[string]interface{}) RBFKernel {
 	// TODO - implement a switch statement to return the appropriate kernel given the kernel type and kernel parameters
 
 	switch kernelType {
 	case "gaussian":
-		return NewGaussianKernel(parameters)
+		return NewGaussianKernel(distance, parameters)
 	}
 	return nil
 }
