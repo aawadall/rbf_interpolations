@@ -124,13 +124,12 @@ $$
             ||\mathbf{x}_q - \mathbf{x}^{(m)}||
         \end{matrix}
         \right) \quad \forall \mathbf{x}^{(i)} \in \mathcal{X} \\
-
         \vec{\phi}_q &= \phi(\vec{r}_q) \\
         \vec{y}_q &= \vec{\phi}_q^{T} \cdot \mathbf{w} \\
     \end{aligned}
 $$
 
-note that $\vec{y}_q$ is a vector of length $n$ corresponding to the number of dimensions of the function $\psi(.)$, $\vec{\phi}_q$ is a vector of length $m$ corresponding to the number of known points $\mathcal{X}$, and $\mathbf{w}$ is a matrix of size $m \times n$ as calculated earlier. 
+    note that $\vec{y}_q$ is a vector of length $n$ corresponding to the number of dimensions of the function $\psi(.)$, $\vec{\phi}_q$ is a vector of length $m$ corresponding to the number of known points $\mathcal{X}$, and $\mathbf{w}$ is a matrix of size $m \times n$ as calculated earlier. 
 
 
 ## Implementation Architecture

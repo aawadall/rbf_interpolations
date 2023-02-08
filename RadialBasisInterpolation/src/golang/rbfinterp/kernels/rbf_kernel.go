@@ -1,8 +1,8 @@
 package kernels
 
 type RBFKernel interface {
-	// similarity returns the similarity between two points.
-	similarity(x, y Point) float64
+	// Similarity returns the Similarity between two points.
+	Similarity(x, y Point) float64
 }
 
 // Main Factory method for creating a new RBFKernel.

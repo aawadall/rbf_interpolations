@@ -44,7 +44,7 @@ func TestGaussianKernelSimilarity(t *testing.T) {
 	x := Point{Dimensionality: 2, Coordinates: []float64{0.0, 0.0}}
 	y := Point{Dimensionality: 2, Coordinates: []float64{1.0, 1.0}}
 
-	similarity := gk.similarity(x, y)
+	similarity := gk.Similarity(x, y)
 
 	difference := make([]float64, 2)
 	for i := 0; i < 2; i++ {

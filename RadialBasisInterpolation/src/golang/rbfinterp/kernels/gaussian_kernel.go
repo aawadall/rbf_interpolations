@@ -26,7 +26,7 @@ func NewGaussianKernel(distance DistanceFunction, params map[string]interface{})
 }
 
 // similarity returns the similarity between two points.
-func (gk *GaussianKernel) similarity(x, y Point) float64 {
+func (gk *GaussianKernel) Similarity(x, y Point) float64 {
 	// TODO - implement
 	distance, err := gk.DistanceFunction(x, y)
 
