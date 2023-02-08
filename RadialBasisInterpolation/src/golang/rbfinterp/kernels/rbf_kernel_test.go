@@ -63,7 +63,8 @@ func TestGaussianKernelSimilarity(t *testing.T) {
 
 	expected := math.Exp(-sum / (2.0 * math.Pow(params["sigma"].(float64), 2.0)))
 
-	if similarity != expected {
+	// approximate equality
+	if math.Abs(similarity-expected) > 0.0000000000000001 {
 		t.Errorf("GaussianKernel.similarity() => similarity != expected; %f != %f", similarity, expected)
 	}
 }
