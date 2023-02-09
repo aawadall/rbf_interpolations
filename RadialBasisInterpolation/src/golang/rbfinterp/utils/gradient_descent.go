@@ -1,6 +1,9 @@
 package utils
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 // GradientDescent
 func GradientDescent(A [][]float64, y []float64, epsilon float64, alpha float64) []float64 {
@@ -12,6 +15,7 @@ func GradientDescent(A [][]float64, y []float64, epsilon float64, alpha float64)
 
 	// while J > epsilon
 	for J > epsilon {
+		fmt.Printf("J: %f\n", J)
 		// Calculate the gradient of J with respect to theta
 		gradient := Gradient(A, y, theta)
 

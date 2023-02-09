@@ -88,43 +88,58 @@ func (r *RBFInterpolator) Train() error {
 	}
 
 	// TODO - calculate weights = inv(simTsim) * simT * y
-	epsilon := 0.0001 // Error tolerance
-	alpha := 0.1   // Learning rate
+	epsilon := 0.000001 // Error tolerance
+	alpha := 0.05          // Learning rate
 	r.Weights = utils.GradientDescent(similarityMatrix, r.SupportValues, epsilon, alpha)
 
+	// inspect weights
+	//fmt.Printf("\n\n\nWeights: %v, size = %d, support points size: %d", r.Weights, len(r.Weights), len(r.SupportPoints))
 	return nil
 }
 
 // Predict the value of a point.
 func (r *RBFInterpolator) Predict(x Point) (float64, error) {
+	fmt.Printf("Predicting value for point: %v", x)
 	// check that the support points and values have been loaded
 	if len(r.SupportPoints) == 0 || len(r.SupportValues) == 0 {
+		fmt.Printf("support points and their values must be loaded before training")
 		return 0, fmt.Errorf("support points and their values must be loaded before training")
 	}
 
 	// check that the support points and values are the same length
 	if len(r.SupportPoints) != len(r.SupportValues) {
+		fmt.Printf("support points and their values must have same length")
 		return 0, fmt.Errorf("support points and their values must have same length")
 	}
 
 	// check that the weights have been calculated
 	if len(r.Weights) == 0 {
+		fmt.Printf("weights must be calculated before predicting")
 		return 0, fmt.Errorf("weights must be calculated before predicting")
 	}
 
 	// check that the weights are the same length as the support points
-	if len(r.Weights) != r.SupportPoints[0].Dimensionality {
+	if len(r.Weights) != len(r.SupportPoints) {
+		fmt.Printf("weights must be the same length as the support points")
 		return 0, fmt.Errorf("weights must be the same length as the support points")
 	}
 
+	fmt.Printf("about to calculate similarity")
 	// calculate similarity between x and each support point
 	similarity := make([]float64, len(r.SupportPoints))
 	for i := 0; i < len(r.SupportPoints); i++ {
 		similarity[i] = r.Kernel.Similarity(x, r.SupportPoints[i])
 	}
 
+	// print similarity
+	//fmt.Printf("\n\nSimilarity: %v\n\n", similarity)
+
+	fmt.Printf("about to calculate prediction")
+
 	// calculate the prediction as the dot product of the weights and the similarity
 	prediction := utils.DotProduct(r.Weights, similarity)
 
+	// inspect prediction
+	// fmt.Printf("\n\nPrediction: %f\n\n", prediction)
 	return prediction, nil
 }
