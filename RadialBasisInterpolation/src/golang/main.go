@@ -10,9 +10,9 @@ import (
 func main() {
 	// HACK - test scratchpad.ConjugateGradientDescent on A and y and test
 	A := [][]float64{
-		{1, 2, 3},
-		{4, 5, 6},
-		{7, 8, 9},
+		{1, 0, 0},
+		{0, 1, 0},
+		{0, 0, 1},
 	}
 
 	y := []float64{1, 2, 3}
@@ -28,12 +28,13 @@ func main() {
 	}
 
 	// test error
-	error := 0.0
+	
 	for i := 0; i < 3; i++ {
-		error += math.Pow(y_hat[i]-y[i], 2.0)
+		fmt.Printf("y_hat[%d] = %f\n", i, y_hat[i])
+		fmt.Printf("y[%d] = %f\n", i, y[i])
+		fmt.Printf("error = %f\n", math.Abs(y_hat[i] - y[i]))		
 	}
 
-	fmt.Printf("error: %f\n", error)
 
 	// TODO - implement
 }

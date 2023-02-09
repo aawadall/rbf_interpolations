@@ -2,185 +2,73 @@ package scratchpad
 
 import "math"
 
-// use this file to experiment with Gradient Descent
+// GradientDescent
+func GradientDescent(A [][]float64, y []float64, epsilon float64) []float64 {
+	// Initialize theta to 0 vector
+	theta := make([]float64, len(A[0]))
 
-// ConjugateGradientDescent
-func ConjugateGradientDescent(A [][]float64, y []float64, epsilon float64) []float64 {
-	// Given a symmetric positive definite matrix A and a vector y, find a vector x such that Ax = y
-	// With tolerance epsilon and initial guess x0 = 0
+	// set alpha 
+	alpha := 0.01
 
-	// get sizes of A and y to calculate size of x
-	m := len(A)    // number of rows in A
-	n := len(A[0]) // number of columns in A
+	// Get objective function
+	J := Objective(A, y, theta)
+	
+	// while J > epsilon
+	for J > epsilon {
+		// Calculate the gradient of J with respect to theta
+		gradient := Gradient(A, y, theta)
 
-	k := len(y) // number of rows in y
+		// Update theta
+		for i := 0; i < len(theta); i++ {
+			theta[i] -= alpha * gradient[i]
+		}
 
-	// ensure that A and y are the same size
-	if m != k {
-		return nil
+		// Update J
+		J = Objective(A, y, theta)
 	}
 
-	// initialize vector x to 0 x n
-	x := make([]float64, n)
-
-	// calculate initial gradient g = Ax - y
-	g := make([]float64, n)
-	g = Add(Dot(A, x), Neg(y))
-
-	// calculate initial residual r = -g
-	r := make([]float64, n)
-	r = Neg(g)
-
-	// loop until norm(g) < epsilon
-	for Norm(g) > epsilon {
-		// calclate lambda star as gTr/rTA*r
-		lambdaStar := VDot(g, r) / VDot(Dot(A, r), r)
-		
-		// calculate x = x + lambdaStar * r
-		x = Add(x, Scale(lambdaStar, r))
-
-		// calculate g = Ax - y
-		g = Add(Dot(A, x), Neg(y))
-
-		// calculate beta = gTAr/rTAr
-		beta := VDot(g, Dot(A, r)) / VDot(r, Dot(A, r))
-
-		// calculate r = -g + beta * r
-		r = Add(Neg(g), Scale(beta, r))
-	}
-
-	return x
+	return theta
 }
 
-// Dot
-func Dot(A [][]float64, x []float64) []float64 {
-	// Given a matrix A and a vector x, return the vector Ax
+// Objective
+func Objective(A [][]float64, y []float64, theta []float64) float64 {
+	// Given dense matrix A, vector y, and vector theta
+	// Calculate y_hat as A * theta
+	y_hat := MatVecDot(A, theta)
 
-	// get sizes of A and x to calculate size of Ax
-	m := len(A)    // number of rows in A
-	n := len(A[0]) // number of columns in A
-
-	k := len(x) // number of rows in x
-
-	// ensure that A and x are the same size
-	if n != k {
-		return nil
+	// Calculate errVector as y - y_hat
+	errVector := make([]float64, len(y))
+	for i := 0; i < len(y); i++ {
+		errVector[i] = y[i] - y_hat[i]
 	}
 
-	// initialize vector Ax to 0 x m
-	Ax := make([]float64, m)
+	// Calculate objective as L2 norm of error
+	J := L2Norm(errVector)
 
-	// calculate Ax
-	for i := 0; i < m; i++ {
-		for j := 0; j < n; j++ {
-			Ax[i] += A[i][j] * x[j]
+	return J
+}
+
+func L2Norm(vector []float64) float64 {
+	J := 0.0
+	for i := 0; i < len(vector); i++ {
+		J += math.Pow(vector[i], 2.0)
+	}
+	return J
+}
+
+func MatVecDot(A [][]float64, theta []float64) []float64 {
+	y_hat := make([]float64, len(A))
+	for i := 0; i < len(A); i++ {
+		for j := 0; j < len(A[0]); j++ {
+			y_hat[i] += A[i][j] * theta[j]
 		}
 	}
-
-	return Ax
-}
-
-// Add
-func Add(x []float64, y []float64) []float64 {
-	// Given two vectors x and y, return the vector x + y
-
-	// get sizes of x and y to calculate size of x + y
-	m := len(x) // number of rows in x
-
-	k := len(y) // number of rows in y
-
-	// ensure that x and y are the same size
-	if m != k {
-		return nil
-	}
-
-	// initialize vector x + y to 0 x m
-	xpy := make([]float64, m)
-
-	// calculate x + y
-	for i := 0; i < m; i++ {
-		xpy[i] = x[i] + y[i]
-	}
-
-	return xpy
-}
-
-// Neg
-func Neg(x []float64) []float64 {
-	// Given a vector x, return the vector -x
-
-	// get size of x to calculate size of -x
-	m := len(x) // number of rows in x
-
-	// initialize vector -x to 0 x m
-	negx := make([]float64, m)
-
-	// calculate -x
-	for i := 0; i < m; i++ {
-		negx[i] = -x[i]
-	}
-
-	return negx
-}
-
-// Norm
-func Norm(x []float64) float64 {
-	// Given a vector x, return the norm of x
-
-	// get size of x to calculate norm of x
-	m := len(x) // number of rows in x
-
-	// initialize norm of x to 0
-	normx := 0.0
-
-	// calculate norm of x
-	for i := 0; i < m; i++ {
-		normx += math.Pow(x[i], 2.0)
-	}
-
-	return math.Sqrt(normx)
+	return y_hat
 }
 
 
-// VDot
-func VDot(x []float64, y []float64) float64 {
-	// Given two vectors x and y, return the dot product of x and y
-
-	// get sizes of x and y to calculate dot product of x and y
-	m := len(x) // number of rows in x
-
-	k := len(y) // number of rows in y
-
-	// ensure that x and y are the same size
-	if m != k {
-		return 0.0
-	}
-
-	// initialize dot product of x and y to 0
-	dotxy := 0.0
-
-	// calculate dot product of x and y
-	for i := 0; i < m; i++ {
-		dotxy += x[i] * y[i]
-	}
-
-	return dotxy
-}
-
-// Scale
-func Scale(lambda float64, x []float64) []float64 {
-	// Given a vector x and a scalar lambda, return the vector lambda * x
-
-	// get size of x to calculate size of lambda * x
-	m := len(x) // number of rows in x
-
-	// initialize vector lambda * x to 0 x m
-	lambdax := make([]float64, m)
-
-	// calculate lambda * x
-	for i := 0; i < m; i++ {
-		lambdax[i] = lambda * x[i]
-	}
-
-	return lambdax
-}
+// Gradient
+func Gradient(A [][]float64, y []float64, theta []float64) []float64 {
+	// Given dense matrix A, vector y, and vector theta
+	// Calculate y_hat as A * theta
+	y_hat := MatVecDot(A, theta)
