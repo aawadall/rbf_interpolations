@@ -2,39 +2,33 @@ package main
 
 import (
 	"fmt"
-	"math"
 
 	"github.com/aawadall/rbf_interpolations/golang/scratchpad"
 )
 
 func main() {
-	// HACK - test scratchpad.ConjugateGradientDescent on A and y and test
-	A := [][]float64{
-		{1, 0, 0},
-		{0, 1, 0},
-		{0, 0, 1},
-	}
-
-	y := []float64{1, 2, 3}
-
-	x := scratchpad.ConjugateGradientDescent(A, y, 0.001)
-
-	// test error
-	y_hat := make([]float64, 3)
+	// Test Gradient Descent
+	A := make([][]float64, 3)
 	for i := 0; i < 3; i++ {
+		A[i] = make([]float64, 3)
+
 		for j := 0; j < 3; j++ {
-			y_hat[i] += A[i][j] * x[j]
+			A[i][j] = float64(i + j)
 		}
 	}
 
-	// test error
-	
+	actual_theta := make([]float64, 3)
+	actual_theta[0] = 1.0
+	actual_theta[1] = 2.0
+	actual_theta[2] = 3.0
+
+	actual_y := scratchpad.MatVecDot(A, actual_theta)
+
+	pred_theta := scratchpad.GradientDescent(A, actual_y, 0.0001)
+
+	pred_y := scratchpad.MatVecDot(A, pred_theta)
+
 	for i := 0; i < 3; i++ {
-		fmt.Printf("y_hat[%d] = %f\n", i, y_hat[i])
-		fmt.Printf("y[%d] = %f\n", i, y[i])
-		fmt.Printf("error = %f\n", math.Abs(y_hat[i] - y[i]))		
+		fmt.Printf("Actual y: %f, Predicted y: %f, err: %f\n", actual_y[i], pred_y[i], actual_y[i]-pred_y[i])
 	}
-
-
-	// TODO - implement
 }
