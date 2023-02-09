@@ -2,33 +2,68 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 
-	"github.com/aawadall/rbf_interpolations/golang/scratchpad"
+	"github.com/aawadall/rbf_interpolations/golang/rbfinterp"
+	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/distances"
+	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/kernels"
+	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/types"
 )
 
+// define types
+type Point = types.Point
+
 func main() {
-	// Test Gradient Descent
-	A := make([][]float64, 3)
-	for i := 0; i < 3; i++ {
-		A[i] = make([]float64, 3)
+	// let us build a scenario where we have a set of points in 2D space and their corresponding values
+	size := 10
+	points, values := MakePointsAndValues(size)
 
-		for j := 0; j < 3; j++ {
-			A[i][j] = float64(i + j)
-		}
+	// build RBF model
+	distance := distances.EuclideanDistance
+	kernel := kernels.NewGaussianKernel(distance, map[string]interface{}{"sigma": 0.1})
+	model := rbfinterp.NewRBFInterpolator(kernel, distance)
+
+	// load points
+	model.LoadData(points, values)
+
+	// train
+	model.Train()
+
+	// create a new point
+	x := 10.0
+	y := 11.0
+	new_point := Point{Dimensionality: 2, Coordinates: []float64{x, y}}
+	true_value := HiddenFunction(x, y)
+
+	// predict
+	predicted_value, _ := model.Predict(new_point)
+
+	// print results
+	fmt.Printf("True value: %v\n", true_value)
+	fmt.Printf("Predicted value: %v\n", predicted_value)
+	fmt.Printf("Error: %v\n", true_value-predicted_value)
+}
+
+// MakePointsAndValues creates a set of points in 2D space and their corresponding values.
+func MakePointsAndValues(size int) ([]Point, []float64) {
+
+	points := make([]Point, 0)
+	values := make([]float64, 0)
+
+	for i := 0; i < size; i++ {
+		x := (rand.Float64() * 100.0) - 50.0
+		y := (rand.Float64() * 100.0) - 50.0
+		points = append(points, Point{Dimensionality: 2, Coordinates: []float64{x, y}})
+		values = append(values, HiddenFunction(x, y)+Noise())
 	}
 
-	actual_theta := make([]float64, 3)
-	actual_theta[0] = 1.0
-	actual_theta[1] = 2.0
-	actual_theta[2] = 3.0
+	return points, values
+}
 
-	actual_y := scratchpad.MatVecDot(A, actual_theta)
+func HiddenFunction(x, y float64) float64 {
+	return x*x + y*y
+}
 
-	pred_theta := scratchpad.GradientDescent(A, actual_y, 0.0001)
-
-	pred_y := scratchpad.MatVecDot(A, pred_theta)
-
-	for i := 0; i < 3; i++ {
-		fmt.Printf("Actual y: %f, Predicted y: %f, err: %f\n", actual_y[i], pred_y[i], actual_y[i]-pred_y[i])
-	}
+func Noise() float64 {
+	return (2.0*rand.Float64() - 1.0) / 10
 }

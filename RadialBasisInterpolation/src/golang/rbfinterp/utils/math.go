@@ -31,6 +31,8 @@ func Subtract(x, y Point) (Point, error) {
 
 	// check that the points are the same dimensionality
 	if x.Dimensionality != y.Dimensionality {
+		fmt.Printf("x: %v", x.Dimensionality)
+		fmt.Printf("y: %v", y.Dimensionality)
 		return Point{}, fmt.Errorf("points are not the same dimensionality")
 	}
 
