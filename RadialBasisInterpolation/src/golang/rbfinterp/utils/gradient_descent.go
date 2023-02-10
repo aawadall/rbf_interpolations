@@ -18,17 +18,17 @@ func GradientDescent(A [][]float64, y []float64, theta []float64, alpha float64,
 	iter := 0
 	for J > epsilon && iter < max_iter {
 		iter += 1
-		fmt.Printf("J: %f\n", J)
 		// Calculate the gradient of J with respect to theta
 		gradient := Gradient(A, y, result_theta)
-
+		
 		// Update theta
 		for i := 0; i < len(result_theta); i++ {
 			result_theta[i] -= alpha * gradient[i]
 		}
-
+		
 		// Update J
 		J = Objective(A, y, result_theta)
+		fmt.Printf("[%d] J: %f\n",iter,  J)
 	}
 
 	return result_theta

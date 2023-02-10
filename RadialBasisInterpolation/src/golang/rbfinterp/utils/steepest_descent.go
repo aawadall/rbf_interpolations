@@ -1,5 +1,7 @@
 package utils
 
+import "fmt"
+
 // SteepestDescent
 func SteepestDescent(A [][]float64, y []float64, theta []float64, alpha float64, max_iter int, epsilon float64) []float64 {
 	// Initialize theta to 0 vector
@@ -13,9 +15,9 @@ func SteepestDescent(A [][]float64, y []float64, theta []float64, alpha float64,
 	
 	// 2. calculate gradient using this theta
 	gradient := Gradient(A, y, result_theta)
-
+	J := L2Norm(gradient)
 	iter := 0
-	for L2Norm(gradient) < epsilon && iter < max_iter {
+	for J < epsilon && iter < max_iter {
 		iter += 1
 		// 3. get direction 
 		direction := SclaerVecMult(-1.0, gradient)
@@ -28,6 +30,8 @@ func SteepestDescent(A [][]float64, y []float64, theta []float64, alpha float64,
 
 		// 6. calculate gradient using this theta
 		gradient = Gradient(A, y, result_theta)
+		J = L2Norm(gradient)
+		fmt.Printf("[%d] J: %f", iter, J)
 	}
 	return result_theta
 }
