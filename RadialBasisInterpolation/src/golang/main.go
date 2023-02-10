@@ -17,13 +17,13 @@ type Point = types.Point
 func main() {
 	// let us build a scenario where we have a set of points in 2D space and their corresponding values
 	size := 100
-	span := 100
+	span := 50
 	points, values := MakePointsAndValues(size, span)
 
 	// build RBF model
 	distance := distances.EuclideanDistance
 	kernel := kernels.NewGaussianKernel(distance, map[string]interface{}{"sigma": 0.0005})
-	optimization := utils.GradientDescent
+	optimization := utils.SteepestDescent
 	model := rbfinterp.NewRBFInterpolator(kernel, distance, optimization)
 
 	// load points

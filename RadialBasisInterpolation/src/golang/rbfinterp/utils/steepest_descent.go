@@ -7,22 +7,22 @@ func SteepestDescent(A [][]float64, y []float64, theta []float64, alpha float64,
 	// Initialize theta to 0 vector
 	// theta := make([]float64, len(A[0]))
 
-
+	fmt.Printf("Steepest Descent Optimization\n")
 	// TODO - Implement Steepest Descent Algorithm
 
 	// 1. initialize theta to initial guess
 	result_theta := theta
-	
+
 	// 2. calculate gradient using this theta
 	gradient := Gradient(A, y, result_theta)
 	J := L2Norm(gradient)
 	iter := 0
-	for J < epsilon && iter < max_iter {
+	for J > epsilon && iter < max_iter {
 		iter += 1
-		// 3. get direction 
+		// 3. get direction
 		direction := SclaerVecMult(-1.0, gradient)
 
-		// 4. get step size 
+		// 4. get step size
 		step_size := LineSearch(A, y, result_theta, direction, alpha)
 
 		// 5. update theta
@@ -30,8 +30,9 @@ func SteepestDescent(A [][]float64, y []float64, theta []float64, alpha float64,
 
 		// 6. calculate gradient using this theta
 		gradient = Gradient(A, y, result_theta)
+		old_j := J
 		J = L2Norm(gradient)
-		fmt.Printf("[%d] J: %f", iter, J)
+		fmt.Printf("[%d] \tJ: %f -> step size %f, improved %0.2f%%\n", iter, J, step_size, (old_j-J)/old_j*100.0)
 	}
 	return result_theta
 }
@@ -40,7 +41,7 @@ func SteepestDescent(A [][]float64, y []float64, theta []float64, alpha float64,
 func LineSearch(A [][]float64, y []float64, theta []float64, direction []float64, alpha float64) float64 {
 	// find optimal step size using backtracking line search
 	// 1. initialize step size to 1
-	step_size := 1.0
+	step_size := 10.0
 
 	// 2. iterate until stop converging
 	for !Converging(A, y, theta, direction, step_size, alpha) {

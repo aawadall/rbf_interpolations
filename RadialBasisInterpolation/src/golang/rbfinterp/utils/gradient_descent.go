@@ -8,6 +8,8 @@ type OptimizationFunction func(A [][]float64, y []float64, theta []float64, alph
 
 // GradientDescent
 func GradientDescent(A [][]float64, y []float64, theta []float64, alpha float64, max_iter int, epsilon float64)  []float64 {
+	fmt.Printf("Gradient Descent Optimization\n")
+	
 	// Initialize theta to 0 vector
 	result_theta := theta
 
@@ -27,8 +29,9 @@ func GradientDescent(A [][]float64, y []float64, theta []float64, alpha float64,
 		}
 		
 		// Update J
+		old_j := J
 		J = Objective(A, y, result_theta)
-		fmt.Printf("[%d] J: %f\n",iter,  J)
+		fmt.Printf("[%d] \tJ: %f -> improved %0.2f%%\n", iter, J, (old_j-J)/old_j*100.0)
 	}
 
 	return result_theta
