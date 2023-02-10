@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"math"
+	"math/rand"
 
 	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/types"
 )
@@ -61,4 +62,9 @@ func SquareRootSum(x Point) (float64, error) {
 	}
 
 	return math.Sqrt(result), nil
+}
+
+// RandomFloat64 returns a random float64 between min and max
+func RandomFloat64(min, max float64) float64 {
+	return min + rand.Float64()*(max-min)
 }

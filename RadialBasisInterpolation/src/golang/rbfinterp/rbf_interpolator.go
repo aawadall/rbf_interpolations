@@ -92,10 +92,12 @@ func (r *RBFInterpolator) Train() error {
 
 	// TODO - calculate weights = inv(simTsim) * simT * y
 	epsilon := 0.0000001 // Error tolerance
-	alpha := 0.9       // Learning rate
+	alpha := 0.95        // Learning rate
 	// initialize weights to random values
 	r.Weights = make([]float64, n)
-	
+	for i := 0; i < n; i++ {
+		r.Weights[i] = utils.RandomFloat64(-2.0, 2.0)
+	}
 	r.Weights = r.OptimizationFunction(similarityMatrix, r.SupportValues, r.Weights, alpha, 1000, epsilon)
 
 	// inspect weights
