@@ -38,16 +38,33 @@ func Gradient(A [][]float64, y []float64, theta []float64) []float64 {
 
 // Transpose
 func Transpose(A [][]float64) [][]float64 {
+	// A_transpose := make([][]float64, len(A[0]))
+	// for i := 0; i < len(A[0]); i++ {
+	// 	A_transpose[i] = make([]float64, len(A))
+	// 	for j := 0; j < len(A); j++ {
+	// 		A_transpose[i][j] = A[j][i]
+	// 	}
+	// }
+	// return A_transpose
+	return TransposeGoRoutine(A)
+}
+
+// TransposeGoRoutine 
+func TransposeGoRoutine(A [][]float64) [][]float64 {
 	A_transpose := make([][]float64, len(A[0]))
 	for i := 0; i < len(A[0]); i++ {
 		A_transpose[i] = make([]float64, len(A))
-		for j := 0; j < len(A); j++ {
-			A_transpose[i][j] = A[j][i]
-		}
+	}
+
+	for i := 0; i < len(A[0]); i++ {
+		go func(i int) {
+			for j := 0; j < len(A); j++ {
+				A_transpose[i][j] = A[j][i]
+			}
+		}(i)
 	}
 	return A_transpose
 }
-
 // SclaerVecMult
 func SclaerVecMult(scalar float64, vector []float64) []float64 {
 	for i := 0; i < len(vector); i++ {

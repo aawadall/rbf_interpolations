@@ -41,7 +41,7 @@ func SteepestDescent(A [][]float64, y []float64, theta []float64, alpha float64,
 func LineSearch(A [][]float64, y []float64, theta []float64, direction []float64, alpha float64) float64 {
 	// find optimal step size using backtracking line search
 	// 1. initialize step size to 1
-	step_size := 10.0
+	step_size := 3.0
 
 	// 2. iterate until stop converging
 	for !Converging(A, y, theta, direction, step_size, alpha) {
