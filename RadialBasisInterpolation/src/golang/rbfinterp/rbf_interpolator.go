@@ -80,23 +80,17 @@ func (r *RBFInterpolator) Train() error {
 
 	// build the similarity matrix of size n x n
 	n := len(r.SupportPoints)
-	similarityMatrix := make([][]float64, n)
-
-	for i := 0; i < n; i++ {
-		fmt.Printf("Training RBF Interpolator: %d/%d\n", i, n)
-		similarityMatrix[i] = make([]float64, n)
-		for j := 0; j < n; j++ {
-			similarityMatrix[i][j] = r.Kernel.Similarity(r.SupportPoints[i], r.SupportPoints[j])
-		}
-	}
-
+	//go func(i, j int) {
+	//}(i, j)
+	similarityMatrix := r.KMatrixParallel(n)
+	fmt.Printf("Similarity Matrix Calculated")
 	// TODO - calculate weights = inv(simTsim) * simT * y
-	epsilon := 0.0000001 // Error tolerance
-	alpha := 0.95        // Learning rate
+	epsilon := 0.000000001 // Error tolerance
+	alpha := 0.4321        // Learning rate
 	// initialize weights to random values
 	r.Weights = make([]float64, n)
 	for i := 0; i < n; i++ {
-		r.Weights[i] = utils.RandomFloat64(-2.0, 2.0)
+		r.Weights[i] = utils.RandomFloat64(-0.1, 0.1)
 	}
 	r.Weights = r.OptimizationFunction(similarityMatrix, r.SupportValues, r.Weights, alpha, 1000, epsilon)
 
@@ -105,6 +99,41 @@ func (r *RBFInterpolator) Train() error {
 	return nil
 }
 
+func (r *RBFInterpolator) KMatrix(n int) [][]float64 {
+	similarityMatrix := make([][]float64, n)
+
+	for i := 0; i < n; i++ {
+		fmt.Printf("Training RBF Interpolator: %d/%d\n", i, n)
+		similarityMatrix[i] = make([]float64, n)
+		for j := 0; j < n; j++ {
+
+			similarityMatrix[i][j] = r.Kernel.Similarity(r.SupportPoints[i], r.SupportPoints[j])
+
+		}
+	}
+	return similarityMatrix
+}
+
+// KMatrixParallel is a parallelized version of KMatrix.
+func (r *RBFInterpolator) KMatrixParallel(n int) [][]float64 {
+	similarityMatrix := make([][]float64, n)
+
+	for i := 0; i < n; i++ {
+		fmt.Printf("Training RBF Interpolator: %d/%d\n", i, n)
+		similarityMatrix[i] = make([]float64, n)
+	}
+
+	// TODO - parallelize this
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			go func(i, j int) {
+			similarityMatrix[i][j] = r.Kernel.Similarity(r.SupportPoints[i], r.SupportPoints[j])
+			}(i, j)
+		}
+	}
+
+	return similarityMatrix
+}
 // Predict the value of a point.
 func (r *RBFInterpolator) Predict(x Point) (float64, error) {
 	fmt.Printf("Predicting value for point: %v", x)

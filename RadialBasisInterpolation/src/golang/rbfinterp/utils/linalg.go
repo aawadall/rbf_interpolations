@@ -4,15 +4,28 @@ import "math"
 
 // Linear Algebra Utilities
 func MatVecDot(A [][]float64, theta []float64) []float64 {
+	// y_hat := make([]float64, len(A))
+	// for i := 0; i < len(A); i++ {
+	// 	for j := 0; j < len(A[0]); j++ {
+	// 		y_hat[i] += A[i][j] * theta[j]
+	// 	}
+	// }
+	// return y_hat
+	return MatVecDotGoRoutine(A, theta)
+}
+
+// MatVecDotGoRoutine
+func MatVecDotGoRoutine(A [][]float64, theta []float64) []float64 {
 	y_hat := make([]float64, len(A))
 	for i := 0; i < len(A); i++ {
-		for j := 0; j < len(A[0]); j++ {
-			y_hat[i] += A[i][j] * theta[j]
-		}
+		go func(i int) {
+			for j := 0; j < len(A[0]); j++ {
+				y_hat[i] += A[i][j] * theta[j]
+			}
+		}(i)
 	}
 	return y_hat
 }
-
 // Gradient
 func Gradient(A [][]float64, y []float64, theta []float64) []float64 {
 	// Given dense matrix A, vector y, and vector theta
@@ -21,11 +34,8 @@ func Gradient(A [][]float64, y []float64, theta []float64) []float64 {
 	y_hat := MatVecDot(A, theta)
 
 	// calculate diff as y - y_hat
-	diff := make([]float64, len(y))
-	for i := 0; i < len(y); i++ {
-		diff[i] = y[i] - y_hat[i]
-	}
-
+	diff := VecVecAdd(y, SclaerVecMult(-1.0, y_hat))
+	
 	// Calculate A transpose
 	A_transpose := Transpose(A)
 
@@ -67,34 +77,80 @@ func TransposeGoRoutine(A [][]float64) [][]float64 {
 }
 // SclaerVecMult
 func SclaerVecMult(scalar float64, vector []float64) []float64 {
+	// for i := 0; i < len(vector); i++ {
+	// 	vector[i] *= scalar
+	// }
+	// return vector
+	return ScalarVecMultGoRoutine(scalar, vector)
+}
+
+// ScalarVecMultGoRoutine
+func ScalarVecMultGoRoutine(scalar float64, vector []float64) []float64 {
 	for i := 0; i < len(vector); i++ {
-		vector[i] *= scalar
+		go func(i int) {
+			vector[i] *= scalar
+		}(i)
 	}
 	return vector
 }
-
 // DotProduct
 func DotProduct(x, y []float64) float64 {
+	// dot := 0.0
+	// for i := 0; i < len(x); i++ {
+	// 	dot += x[i] * y[i]
+	// }
+	// return dot
+	return DotProductGoRoutine(x, y)
+}
+
+// DotProductGoRoutine 
+func DotProductGoRoutine(x, y []float64) float64 {
 	dot := 0.0
 	for i := 0; i < len(x); i++ {
-		dot += x[i] * y[i]
+		go func(i int) {
+			dot += x[i] * y[i]
+		}(i)
 	}
 	return dot
 }
 
 func L2Norm(vector []float64) float64 {
+	// J := 0.0
+	// for i := 0; i < len(vector); i++ {
+	// 	J += math.Pow(vector[i], 2.0)
+	// }
+	// return J
+	return L2NormGoRoutine(vector)
+}
+
+// L2NormGoRoutine
+func L2NormGoRoutine(vector []float64) float64 {
 	J := 0.0
 	for i := 0; i < len(vector); i++ {
-		J += math.Pow(vector[i], 2.0)
+		go func(i int) {
+			J += math.Pow(vector[i], 2.0)
+		}(i)
 	}
 	return J
 }
 
 // VecVecAdd 
 func VecVecAdd(x, y []float64) []float64 {
+	// z := make([]float64, len(x))
+	// for i := 0; i < len(x); i++ {
+	// 	z[i] = x[i] + y[i]
+	// }
+	// return z
+	return VecVecAddGoRoutine(x, y)
+}
+
+// VecVecAddGoRoutine
+func VecVecAddGoRoutine(x, y []float64) []float64 {
 	z := make([]float64, len(x))
 	for i := 0; i < len(x); i++ {
-		z[i] = x[i] + y[i]
+		go func(i int) {
+			z[i] = x[i] + y[i]
+		}(i)
 	}
 	return z
 }

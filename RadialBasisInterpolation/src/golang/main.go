@@ -16,13 +16,13 @@ type Point = types.Point
 
 func main() {
 	// let us build a scenario where we have a set of points in 2D space and their corresponding values
-	size := 100
-	span := 50
+	size := 120
+	span := 1
 	points, values := MakePointsAndValues(size, span)
 
 	// build RBF model
 	distance := distances.EuclideanDistance
-	kernel := kernels.NewGaussianKernel(distance, map[string]interface{}{"sigma": 0.0005})
+	kernel := kernels.NewGaussianKernel(distance, map[string]interface{}{"sigma": 0.0001})
 	optimization := utils.SteepestDescent
 	model := rbfinterp.NewRBFInterpolator(kernel, distance, optimization)
 
@@ -33,8 +33,8 @@ func main() {
 	model.Train()
 
 	// create a new point
-	x := Noise()*float64(span)
-	y := Noise()*float64(span)
+	x := 1.1
+	y := 1.1
 	new_point := Point{Dimensionality: 2, Coordinates: []float64{x, y}}
 	true_value := HiddenFunction(x, y)
 
@@ -72,8 +72,8 @@ func MakePointsAndValues(span, size int) ([]Point, []float64) {
 	scale := float64(span)/float64(size)
 	for i := 0; i < span; i++ {
 		for j := 0; j < span; j++ {
-			x := float64(i)*scale - float64(size)/2.0 + Noise()
-			y := float64(j)*scale - float64(size)/2.0 + Noise()
+			x := (float64(i)*scale - float64(size)/2.0) +(0.0+ Noise())
+			y := (float64(j)*scale - float64(size)/2.0) +(0.0+ Noise())
 			points = append(points, Point{Dimensionality: 2, Coordinates: []float64{x, y}})
 			values = append(values, HiddenFunction(x, y)+Noise())
 		}
@@ -87,5 +87,5 @@ func HiddenFunction(x, y float64) float64 {
 }
 
 func Noise() float64 {
-	return (2.0*rand.Float64() - 1.0) / 10
+	return (2.0*rand.Float64() - 1.0) / 1000
 }
