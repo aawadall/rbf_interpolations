@@ -29,7 +29,7 @@ func SteepestDescent(A [][]float64, y []float64, theta []float64, alpha float64,
 		// 6. calculate gradient using this theta
 		gradient = Gradient(A, y, result_theta)
 	}
-	return theta
+	return result_theta
 }
 
 // LineSearch

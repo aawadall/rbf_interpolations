@@ -4,30 +4,34 @@ import (
 	"fmt"
 )
 
+type OptimizationFunction func(A [][]float64, y []float64, theta []float64, alpha float64, max_iter int, epsilon float64)  []float64 
+
 // GradientDescent
-func GradientDescent(A [][]float64, y []float64, epsilon float64, alpha float64) []float64 {
+func GradientDescent(A [][]float64, y []float64, theta []float64, alpha float64, max_iter int, epsilon float64)  []float64 {
 	// Initialize theta to 0 vector
-	theta := make([]float64, len(A[0]))
+	result_theta := theta
 
 	// Get objective function
-	J := Objective(A, y, theta)
+	J := Objective(A, y, result_theta)
 
 	// while J > epsilon
-	for J > epsilon {
+	iter := 0
+	for J > epsilon && iter < max_iter {
+		iter += 1
 		fmt.Printf("J: %f\n", J)
 		// Calculate the gradient of J with respect to theta
-		gradient := Gradient(A, y, theta)
+		gradient := Gradient(A, y, result_theta)
 
 		// Update theta
-		for i := 0; i < len(theta); i++ {
-			theta[i] -= alpha * gradient[i]
+		for i := 0; i < len(result_theta); i++ {
+			result_theta[i] -= alpha * gradient[i]
 		}
 
 		// Update J
-		J = Objective(A, y, theta)
+		J = Objective(A, y, result_theta)
 	}
 
-	return theta
+	return result_theta
 }
 
 // Objective

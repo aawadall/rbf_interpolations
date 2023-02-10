@@ -8,6 +8,7 @@ import (
 	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/distances"
 	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/kernels"
 	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/types"
+	"github.com/aawadall/rbf_interpolations/golang/rbfinterp/utils"
 )
 
 // define types
@@ -15,14 +16,15 @@ type Point = types.Point
 
 func main() {
 	// let us build a scenario where we have a set of points in 2D space and their corresponding values
-	size := 10
+	size := 100
 	span := 100
 	points, values := MakePointsAndValues(size, span)
 
 	// build RBF model
 	distance := distances.EuclideanDistance
 	kernel := kernels.NewGaussianKernel(distance, map[string]interface{}{"sigma": 0.0005})
-	model := rbfinterp.NewRBFInterpolator(kernel, distance)
+	optimization := utils.GradientDescent
+	model := rbfinterp.NewRBFInterpolator(kernel, distance, optimization)
 
 	// load points
 	model.LoadData(points, values)

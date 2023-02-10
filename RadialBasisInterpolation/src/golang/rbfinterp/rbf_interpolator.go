@@ -12,26 +12,29 @@ import (
 // type aliases
 type RBFKernel = kernels.RBFKernel
 type DistanceFunction = distances.DistanceFunction
+type OptimizationFunction = utils.OptimizationFunction
 type Point = types.Point
 
 // RBFInterpolator is a struct that implements the Radial Basis Function Interpolation algorithm.
 type RBFInterpolator struct {
-	Kernel        RBFKernel
-	Distance      DistanceFunction
-	SupportPoints []Point
-	SupportValues []float64
-	Weights       []float64
+	Kernel               RBFKernel
+	Distance             DistanceFunction
+	OptimizationFunction OptimizationFunction
+	SupportPoints        []Point
+	SupportValues        []float64
+	Weights              []float64
 }
 
 // Factory method for creating a new RBFInterpolator.
-func NewRBFInterpolator(kernel RBFKernel, distance DistanceFunction) *RBFInterpolator {
+func NewRBFInterpolator(kernel RBFKernel, distance DistanceFunction, optimizationFunction OptimizationFunction) *RBFInterpolator {
 
 	return &RBFInterpolator{
-		Kernel:        kernel,
-		Distance:      distance,
-		SupportPoints: make([]Point, 0),
-		SupportValues: make([]float64, 0),
-		Weights:       make([]float64, 0),
+		Kernel:               kernel,
+		Distance:             distance,
+		OptimizationFunction: optimizationFunction,
+		SupportPoints:        make([]Point, 0),
+		SupportValues:        make([]float64, 0),
+		Weights:              make([]float64, 0),
 	}
 }
 
@@ -88,9 +91,11 @@ func (r *RBFInterpolator) Train() error {
 	}
 
 	// TODO - calculate weights = inv(simTsim) * simT * y
-	epsilon := 0.000001 // Error tolerance
-	alpha := 0.05          // Learning rate
-	r.Weights = utils.GradientDescent(similarityMatrix, r.SupportValues, epsilon, alpha)
+	epsilon := 0.0000001 // Error tolerance
+	alpha := 0.9       // Learning rate
+	// initialize weights to 0
+	r.Weights = make([]float64, n)
+	r.Weights = r.OptimizationFunction(similarityMatrix, r.SupportValues, r.Weights, alpha, 1000, epsilon)
 
 	// inspect weights
 	//fmt.Printf("\n\n\nWeights: %v, size = %d, support points size: %d", r.Weights, len(r.Weights), len(r.SupportPoints))
