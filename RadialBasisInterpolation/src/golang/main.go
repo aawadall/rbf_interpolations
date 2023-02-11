@@ -24,7 +24,10 @@ func main() {
 	distance := distances.EuclideanDistance
 	kernel := kernels.NewGaussianKernel(distance, map[string]interface{}{"sigma": 0.01})
 	optimization := utils.SteepestDescent
-	model := rbfinterp.NewRBFInterpolator(kernel, distance, optimization)
+	model := rbfinterp.NewRBFInterpolator(kernel, distance, optimization, map[string]interface{}{
+		"alpha":   0.7,
+		"epsilon": 0.0001,
+	})
 
 	// load points
 	model.LoadData(points, values)
@@ -69,11 +72,11 @@ func MakePointsAndValues(span, size int) ([]Point, []float64) {
 
 	points := make([]Point, 0)
 	values := make([]float64, 0)
-	scale := float64(span)/float64(size)
+	scale := float64(span) / float64(size)
 	for i := 0; i < span; i++ {
 		for j := 0; j < span; j++ {
-			x := (float64(i)*scale - float64(size)/2.0) +(0.0+ Noise())
-			y := (float64(j)*scale - float64(size)/2.0) +(0.0+ Noise())
+			x := (float64(i)*scale - float64(size)/2.0) + (0.0 + Noise())
+			y := (float64(j)*scale - float64(size)/2.0) + (0.0 + Noise())
 			points = append(points, Point{Dimensionality: 2, Coordinates: []float64{x, y}})
 			values = append(values, HiddenFunction(x, y)*(1+Noise()))
 		}

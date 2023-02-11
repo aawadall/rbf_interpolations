@@ -32,11 +32,34 @@ func SteepestDescent(A [][]float64, y []float64, theta []float64, alpha float64,
 		gradient = Gradient(A, y, result_theta)
 		old_j := J
 		J = L2Norm(gradient)
-		fmt.Printf("[%d] \tJ: %f -> step size %f, improved %0.2f%%\n", iter, J, step_size, (old_j-J)/old_j*100.0)
+		minTheta := Min(result_theta)
+		maxTheta := Max(result_theta)
+		fmt.Printf("[%d] \tJ: %f -> step size %f, improved %0.2f%% theta: max[%f], min[%f]\n", iter, J, step_size, (old_j-J)/old_j*100.0, maxTheta, minTheta)
 	}
 	return result_theta
 }
 
+// Min
+func Min(a []float64) float64 {
+	min := a[0]
+	for _, v := range a {
+		if v < min {
+			min = v
+		}
+	}
+	return min
+}
+
+// Max
+func Max(a []float64) float64 {
+	max := a[0]
+	for _, v := range a {
+		if v > max {
+			max = v
+		}
+	}
+	return max
+}
 // LineSearch
 func LineSearch(A [][]float64, y []float64, theta []float64, direction []float64, alpha float64) float64 {
 	// find optimal step size using backtracking line search
