@@ -16,13 +16,13 @@ type Point = types.Point
 
 func main() {
 	// let us build a scenario where we have a set of points in 2D space and their corresponding values
-	size := 120
-	span := 1
+	size := 100
+	span := 10
 	points, values := MakePointsAndValues(size, span)
 
 	// build RBF model
 	distance := distances.EuclideanDistance
-	kernel := kernels.NewGaussianKernel(distance, map[string]interface{}{"sigma": 0.0001})
+	kernel := kernels.NewGaussianKernel(distance, map[string]interface{}{"sigma": 0.01})
 	optimization := utils.SteepestDescent
 	model := rbfinterp.NewRBFInterpolator(kernel, distance, optimization)
 
@@ -42,7 +42,7 @@ func main() {
 	predicted_value, _ := model.Predict(new_point)
 
 	// print results
-	fmt.Printf("Point to Query: %v", new_point)
+	fmt.Printf("\n\nPoint to Query: %v", new_point)
 	fmt.Printf("True value: %v\n", true_value)
 	fmt.Printf("Predicted value: %v\n", predicted_value)
 	fmt.Printf("Error: %v\n", true_value-predicted_value)
@@ -58,7 +58,7 @@ func main() {
 	predicted_value, _ = model.Predict(new_point)
 
 	// print results
-	fmt.Printf("True value: %v\n", true_value)
+	fmt.Printf("\n\nTrue value: %v\n", true_value)
 	fmt.Printf("Predicted value: %v\n", predicted_value)
 	fmt.Printf("Error: %v\n", true_value-predicted_value)
 
@@ -75,7 +75,7 @@ func MakePointsAndValues(span, size int) ([]Point, []float64) {
 			x := (float64(i)*scale - float64(size)/2.0) +(0.0+ Noise())
 			y := (float64(j)*scale - float64(size)/2.0) +(0.0+ Noise())
 			points = append(points, Point{Dimensionality: 2, Coordinates: []float64{x, y}})
-			values = append(values, HiddenFunction(x, y)+Noise())
+			values = append(values, HiddenFunction(x, y)*(1+Noise()))
 		}
 	}
 

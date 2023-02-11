@@ -119,12 +119,12 @@ func (r *RBFInterpolator) KMatrixParallel(n int) [][]float64 {
 	similarityMatrix := make([][]float64, n)
 
 	for i := 0; i < n; i++ {
-		fmt.Printf("Training RBF Interpolator: %d/%d\n", i, n)
 		similarityMatrix[i] = make([]float64, n)
 	}
-
+	
 	// TODO - parallelize this
 	for i := 0; i < n; i++ {
+		fmt.Printf("Training RBF Interpolator: %d/%d\n", i, n)
 		for j := 0; j < n; j++ {
 			go func(i, j int) {
 			similarityMatrix[i][j] = r.Kernel.Similarity(r.SupportPoints[i], r.SupportPoints[j])
