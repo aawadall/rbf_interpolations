@@ -88,29 +88,12 @@ func (r *RBFInterpolator) Train() error {
 	fmt.Printf("Similarity Matrix Calculated")
 	// TODO - calculate weights = inv(simTsim) * simT * y
 
-	// if epsilon is present in configuration, use it as float64, otherwise take default value
-	
-	epsilon := 0.0001
-	if epsilon, ok := r.Configuration["epsilon"]; ok {
-		epsilon, ok = epsilon.(float64)
-		if !ok {
-			epsilon = 0.0001
-		}
-	}
-	// take alpha from configuration if present as float64, otherwise take default value
-	alpha := 0.5
-	if alpha, ok := r.Configuration["alpha"]; ok {
-		alpha, ok = alpha.(float64)
-		if !ok {
-			alpha = 0.5
-		}
-	}
 	// initialize weights to random values
 	r.Weights = make([]float64, n)
 	for i := 0; i < n; i++ {
 		r.Weights[i] = utils.RandomFloat64(-0.1, 0.1)
 	}
-	r.Weights = r.OptimizationFunction(similarityMatrix, r.SupportValues, r.Weights, alpha, 1000, epsilon)
+	r.Weights = r.OptimizationFunction(similarityMatrix, r.SupportValues, r.Weights, r.Configuration)
 
 	// inspect weights
 	//fmt.Printf("\n\n\nWeights: %v, size = %d, support points size: %d", r.Weights, len(r.Weights), len(r.SupportPoints))

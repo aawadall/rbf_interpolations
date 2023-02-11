@@ -4,37 +4,60 @@ import (
 	"fmt"
 )
 
-type OptimizationFunction func(A [][]float64, y []float64, theta []float64, alpha float64, max_iter int, epsilon float64)  []float64 
+type OptimizationFunction func(A [][]float64, y []float64, theta []float64, configuration map[string]interface{})  []float64 
 
 // GradientDescent
-func GradientDescent(A [][]float64, y []float64, theta []float64, alpha float64, max_iter int, epsilon float64)  []float64 {
+func GradientDescent(A [][]float64, y []float64, theta []float64, configuration map[string]interface{})  []float64 {
 	fmt.Printf("Gradient Descent Optimization\n")
+	// Lookup Configuration
+	
+	// Alpha 
+	alpha := 0.1 
+	if alphaParam, ok := configuration["alpha"]; ok {
+		alpha = alphaParam.(float64)
+	}
+	
+	// Max Iteration
+	maxIter := 1000
+	if maxIterParam, ok := configuration["maxIter"]; ok {
+		maxIter = maxIterParam.(int)
+	}
+
+	// Epsilon 
+	epsilon := 0.0001
+	if epsilonParam, ok := configuration["epsilon"]; ok {
+		epsilon = epsilonParam.(float64)
+	}
+
+
+	// Print Configuration
+	fmt.Printf("Configuration: alpha: %f, maxIter: %d, epsilon: %f\n", alpha, maxIter, epsilon)
 	
 	// Initialize theta to 0 vector
-	result_theta := theta
+	resultTheta := theta
 
 	// Get objective function
-	J := Objective(A, y, result_theta)
+	J := Objective(A, y, resultTheta)
 
 	// while J > epsilon
 	iter := 0
-	for J > epsilon && iter < max_iter {
+	for J > epsilon && iter < maxIter {
 		iter += 1
 		// Calculate the gradient of J with respect to theta
-		gradient := Gradient(A, y, result_theta)
+		gradient := Gradient(A, y, resultTheta)
 		
 		// Update theta
-		for i := 0; i < len(result_theta); i++ {
-			result_theta[i] -= alpha * gradient[i]
+		for i := 0; i < len(resultTheta); i++ {
+			resultTheta[i] -= alpha * gradient[i]
 		}
 		
 		// Update J
 		old_j := J
-		J = Objective(A, y, result_theta)
+		J = Objective(A, y, resultTheta)
 		fmt.Printf("[%d] \tJ: %f -> improved %0.2f%%\n", iter, J, (old_j-J)/old_j*100.0)
 	}
 
-	return result_theta
+	return resultTheta
 }
 
 // Objective
