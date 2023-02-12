@@ -88,7 +88,7 @@ func LineSearch(A [][]float64, y []float64, theta []float64, direction []float64
 	step_size := 1.0
 
 	// 2. iterate until stop converging
-	for !Converging(A, y, theta, direction, step_size, alpha, lambda2) && step_size > 0.0001{
+	for !Converging(A, y, theta, direction, step_size, alpha, lambda2) {
 		// 3. update step size
 		step_size *= alpha
 	}

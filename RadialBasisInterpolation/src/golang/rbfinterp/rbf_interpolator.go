@@ -21,6 +21,7 @@ type RBFInterpolator struct {
 	Kernel               RBFKernel
 	Distance             DistanceFunction
 	OptimizationFunction OptimizationFunction
+	KScale               float64
 	SupportPoints        []Point
 	SupportValues        []float64
 	Weights              []float64
@@ -87,6 +88,12 @@ func (r *RBFInterpolator) Train() error {
 	similarityMatrix := r.KMatrixParallel(n)
 	fmt.Printf("Similarity Matrix Calculated")
 	// TODO - calculate weights = inv(simTsim) * simT * y
+
+	// find norm of similarity matrix
+	r.KScale = utils.MatrixNorm(similarityMatrix)
+
+	// scale K by norm
+	similarityMatrix = utils.MatrixScale(similarityMatrix, 1.0/r.KScale)
 
 	// initialize weights to random values
 	r.Weights = make([]float64, n)
@@ -170,6 +177,9 @@ func (r *RBFInterpolator) Predict(x Point) (float64, error) {
 		similarity[i] = r.Kernel.Similarity(x, r.SupportPoints[i])
 	}
 
+	// scale similarity by norm
+	similarity = utils.VectorScale(similarity, 1.0/r.KScale)
+	
 	// print similarity
 	//fmt.Printf("\n\nSimilarity: %v\n\n", similarity)
 

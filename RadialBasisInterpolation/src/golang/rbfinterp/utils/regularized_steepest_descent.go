@@ -44,9 +44,9 @@ func RegularizedSteepestDescent(A [][]float64, y []float64, theta []float64, con
 
 	// 2. calculate gradient using this theta
 	gradient := Gradient(A, y, result_theta)
-	J := L2Norm(gradient) + lambda2 * L2Norm(result_theta)
+	J := L2Norm(gradient) 
 	iter := 0
-	for J > epsilon && iter < maxIter {
+	for J > epsilon  && iter < maxIter {
 		iter += 1
 		// 3. get direction
 		direction := SclaerVecMult(-1.0, gradient)
@@ -60,7 +60,7 @@ func RegularizedSteepestDescent(A [][]float64, y []float64, theta []float64, con
 		// 6. calculate gradient using this theta
 		gradient = Gradient(A, y, result_theta)
 		old_j := J
-		J = L2Norm(gradient) + lambda2 * L2Norm(result_theta)
+		J = L2Norm(gradient) 
 		minTheta := Min(result_theta)
 		maxTheta := Max(result_theta)
 		fmt.Printf("[%d] \tJ: %f -> step size %f, improved %0.2f%% theta: max[%f], min[%f]\n", iter, J, step_size, (old_j-J)/old_j*100.0, maxTheta, minTheta)

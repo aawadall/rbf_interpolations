@@ -131,7 +131,7 @@ func L2NormGoRoutine(vector []float64) float64 {
 			J += math.Pow(vector[i], 2.0)
 		}(i)
 	}
-	return J
+	return math.Pow(J, 0.5)
 }
 
 // VecVecAdd 
@@ -153,4 +153,71 @@ func VecVecAddGoRoutine(x, y []float64) []float64 {
 		}(i)
 	}
 	return z
+}
+
+// MatrixNorm
+func MatrixNorm(A [][]float64) float64 {
+	// J := 0.0
+	// for i := 0; i < len(A); i++ {
+	// 	for j := 0; j < len(A[0]); j++ {
+	// 		J += math.Pow(A[i][j], 2.0)
+	// 	}
+	// }
+	// return J
+	return MatrixNormGoRoutine(A)
+}
+
+// MatrixNormGoRoutine
+func MatrixNormGoRoutine(A [][]float64) float64 {
+	J := 0.0
+	for i := 0; i < len(A); i++ {
+		go func(i int) {
+			for j := 0; j < len(A[0]); j++ {
+				J += math.Pow(A[i][j], 2.0)
+			}
+		}(i)
+	}
+	return math.Pow(J, 0.5)
+}
+
+// MatrixScale 
+func MatrixScale(A [][]float64, scalar float64) [][]float64 {
+	// for i := 0; i < len(A); i++ {
+	// 	for j := 0; j < len(A[0]); j++ {
+	// 		A[i][j] *= scalar
+	// 	}
+	// }
+	// return A
+	return MatrixScaleGoRoutine(A, scalar)
+}
+
+// MatrixScaleGoRoutine
+func MatrixScaleGoRoutine(A [][]float64, scalar float64) [][]float64 {
+	for i := 0; i < len(A); i++ {
+		go func(i int) {
+			for j := 0; j < len(A[0]); j++ {
+				A[i][j] *= scalar
+			}
+		}(i)
+	}
+	return A
+}
+
+// VectorScale
+func VectorScale(x []float64, scalar float64) []float64 {
+	// for i := 0; i < len(x); i++ {
+	// 	x[i] *= scalar
+	// }
+	// return x
+	return VectorScaleGoRoutine(x, scalar)
+}
+
+// VectorScaleGoRoutine
+func VectorScaleGoRoutine(x []float64, scalar float64) []float64 {
+	for i := 0; i < len(x); i++ {
+		go func(i int) {
+			x[i] *= scalar
+		}(i)
+	}
+	return x
 }
