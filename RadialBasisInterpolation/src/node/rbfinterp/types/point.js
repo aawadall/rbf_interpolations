@@ -14,3 +14,6 @@ class Point {
     }
 
 }
+
+// Export
+module.exports = Point;

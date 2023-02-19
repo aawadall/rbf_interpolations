@@ -1,3 +1,9 @@
+// imports 
+const GradientDescent = require('./optimizers/gradientDescent');
+const GaussianKernel = require('./kernels/gaussianKernel');
+const RBFInterpolator = require('./interpolators/rbfInterpolator');
+const Point = require('./types/point');
+const { euclidean } = require('./utils/distance');
 // TODO
 
 main = function() {
@@ -6,8 +12,41 @@ main = function() {
     const points = pointsMaker([-1, 1], [-1, 1], 100, 100);
     const values = points.map(p => noiseWrapper(hiddenFunction(p.x, p.y), 0.5));
 
+    // define calculators 
+    const optimizer = new GradientDescent(0.1, 0.0001);
+    const distance = euclidean;
+    const kernel = new GaussianKernel(distance, { sigma: 0.1 });
+
+    // define interpolator
+    const interpolator = new RBFInterpolator(points, values, kernel, 0.1, optimizer);
+
+    // train interpolator
+    interpolator.train();
+
+    // define test points
+    const testPoints = pointsMaker([-1.1, 1.1], [-1.1, 1.1], 10, 10);
+
+    // predict values
+    const predictions = testPoints.map(p => interpolator.predict(p));
+
+    // report results 
+    report(testPoints, predictions, hiddenFunction)
+
 }
 
+// define report function
+report = (points, predictions, hiddenFunction) => {
+    // TODO
+    // compute error
+    var error = 0;
+    for (let i = 0; i < points.length; i++) {
+        error += Math.pow(predictions[i] - hiddenFunction(points[i].x, points[i].y), 2);
+    }
+    error /= points.length;
+
+    // report error
+    console.log('Normalized Error: ' + error);
+}
 // define hidden function 
 hiddenFunction = (x, y) => {
     // TODO
