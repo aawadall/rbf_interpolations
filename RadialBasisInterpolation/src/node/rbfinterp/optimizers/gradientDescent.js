@@ -9,9 +9,12 @@ class GradientDescent {
 
     optimize(A, y) {
         // TODO - implement 
+        console.log('Optimizing...');
         // initialize weights
         var w = Array(A[0].length).fill(0);
 
+        // console.log('y: ' , y);
+        // console.log('w: ' , w);
         // calculate yHat as A dot w
         var yHat = dot(A, w);
 

@@ -10,7 +10,7 @@ main = function() {
     // TODO
     // define dataset 
     const points = pointsMaker([-1, 1], [-1, 1], 100, 100);
-    const values = points.map(p => noiseWrapper(hiddenFunction(p.x, p.y), 0.5));
+    const values = points.map(p => noiseWrapper(hiddenFunction(p), 0.5));
 
     // define calculators 
     const optimizer = new GradientDescent(0.1, 0.0001);
@@ -48,15 +48,21 @@ report = (points, predictions, hiddenFunction) => {
     console.log('Normalized Error: ' + error);
 }
 // define hidden function 
-hiddenFunction = (x, y) => {
+hiddenFunction = (p) => {
+    const x = p.coordinates[0];
+    const y = p.coordinates[1];
+    const result = x * x + y * y;
+    // console.log(`x: ${x}, y: ${y}, result: ${result}`);
     // TODO
-    return x*x + y*y;
+    return result;
 }
 
 // define noise wrapper 
 noiseWrapper = (fn, signalToNoise) => {
+    const result = fn * signalToNoise + (1 - signalToNoise) * Math.random();
+    // console.log(result);
     // Add noise to the function
-    return fn * signalToNoise + (1 - signalToNoise) * Math.random();
+    return result;
 }
 
 // define points maker 
