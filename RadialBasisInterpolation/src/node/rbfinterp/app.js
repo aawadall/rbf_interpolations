@@ -10,12 +10,12 @@ main = function() {
     // TODO
     // define dataset 
     const points = pointsMaker([-1, 1], [-1, 1], 100, 100);
-    const values = points.map(p => noiseWrapper(hiddenFunction(p), 0.5));
+    const values = points.map(p => noiseWrapper(hiddenFunction(p), 0.99));
 
     // define calculators 
-    const optimizer = new GradientDescent(0.1, 0.0001);
+    const optimizer = new GradientDescent(0.2, 0.0001);
     const distance = euclidean;
-    const kernel = new GaussianKernel(distance, { sigma: 0.1 });
+    const kernel = new GaussianKernel(distance, { sigma: 0.01 });
 
     // define interpolator
     const interpolator = new RBFInterpolator(points, values, kernel, 0.1, optimizer);
@@ -40,7 +40,8 @@ report = (points, predictions, hiddenFunction) => {
     // compute error
     var error = 0;
     for (let i = 0; i < points.length; i++) {
-        error += Math.pow(predictions[i] - hiddenFunction(points[i].x, points[i].y), 2);
+        console.log(`Prediction: ${predictions[i]}, Actual: ${hiddenFunction(points[i])}`);
+        error += Math.pow(predictions[i] - hiddenFunction(points[i]), 2);
     }
     error /= points.length;
 
