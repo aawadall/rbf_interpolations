@@ -1,5 +1,5 @@
 // import linear algebra functions
-const { dot, add, negative, scalarMult, l2Norm } = require('../utils/linearAlgebra');
+const { dot, add, negative, scalarMult, l2Norm, transpose } = require('../utils/linearAlgebra');
 // Gradient Descent Optimizer
 
 class GradientDescent {
@@ -23,6 +23,7 @@ class GradientDescent {
 
         // optimization loop 
         while (l2Norm(gradient) > this.epsilon) {
+            console.log('J: ' + l2Norm(gradient));
             // update weights
             w = add(w, scalarMult(-this.learningRate, gradient));
 

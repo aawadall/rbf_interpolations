@@ -13,6 +13,7 @@ class RBFInterpolator {
 
     // train 
     train() {
+        console.log('Training RBF Interpolator...');
         // TODO - compute K matrix 
         var K = this.points.map(p1 => this.points.map(p2 => this.kernel.similarity(p1, p2)));
 
