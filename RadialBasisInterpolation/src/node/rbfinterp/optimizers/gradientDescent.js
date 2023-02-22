@@ -10,7 +10,7 @@ class GradientDescent {
 
     optimize(A, y) {
         // TODO - implement 
-        console.log('Optimizing...');
+        console.log('Optimizing (using gradient descent)...');
         // initialize weights
         var w = Array(A[0].length).fill(0);
 

@@ -1,5 +1,6 @@
 // imports 
 const GradientDescent = require('./optimizers/gradientDescent');
+const SteepestDescent = require('./optimizers/steepestDescent');
 const GaussianKernel = require('./kernels/gaussianKernel');
 const RBFInterpolator = require('./interpolators/rbfInterpolator');
 const Point = require('./types/point');
@@ -13,7 +14,8 @@ main = function() {
     const values = points.map(p => noiseWrapper(hiddenFunction(p), 0.99));
 
     // define calculators 
-    const optimizer = new GradientDescent(0.2, 0.0001);
+    // const optimizer = new GradientDescent(0.2, 0.0001);
+    const optimizer = new SteepestDescent(0.2, 0.0001);
     const distance = euclidean;
     const kernel = new GaussianKernel(distance, { sigma: 0.01 });
 
